@@ -21,10 +21,6 @@ RUN pip install turicreate
 RUN pip uninstall -y mxnet
 RUN pip install mxnet-cu80==1.1.0
 
-
-# Set up notebook config
-COPY jupyter_notebook_config.py /opt/dot_jupyter/
-
 # Expose Ports for TensorBoard (6006), Ipython (8888)
 EXPOSE 6006 8888
 
@@ -36,6 +32,10 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
     && chmod +x /usr/local/bin/gosu
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+
+# Install additional libs
+RUN conda install -c conda-forge jupyter_full_width jupyter_nbextensions_configurator jupyter_contrib_nbextensions
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

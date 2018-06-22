@@ -1,0 +1,2 @@
+#!/bin/sh
+docker run  --runtime=nvidia -p 10000:8888 -e PASSWORD="1111" -e LOCAL_USER_ID=`id -u $USER` -e JUPYTER_CONFIG_DIR="/work/.jupyter"  -v $HOME/JupyterWork:/work --rm -it darvin/notebook jupyter notebook
