@@ -1,0 +1,34 @@
+FROM nvidia/cuda:8.0-cudnn5-devel-ubuntu16.04
+
+ENV PATH /opt/conda/bin:$PATH
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
+    git mercurial subversion
+
+RUN wget --quiet https://repo.anaconda.com/archive/Anaconda2-5.2.0-Linux-x86_64.sh -O ~/anaconda.sh && \
+    /bin/bash ~/anaconda.sh -b -p /opt/conda && \
+    rm ~/anaconda.sh && \
+    ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.bashrc && \
+    echo "conda activate base" >> ~/.bashrc
+
+
+
+# Install TensorFlow
+RUN conda install tensorflow-gpu
+RUN pip install turicreate
+RUN pip uninstall -y mxnet
+RUN pip install mxnet-cu80==1.1.0
+
+# Set up notebook config
+COPY jupyter_notebook_config.py /root/.jupyter/
+
+# Jupyter has issues with being run directly: https://github.com/ipython/ipython/issues/7062
+COPY run_jupyter.sh /root/
+
+# Expose Ports for TensorBoard (6006), Ipython (8888)
+EXPOSE 6006 8888
+
+WORKDIR "/root"
+CMD ["/bin/bash"]
