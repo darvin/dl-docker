@@ -17,6 +17,10 @@ RUN wget --quiet https://repo.anaconda.com/archive/Anaconda2-5.2.0-Linux-x86_64.
 
 # Install TensorFlow
 RUN conda install tensorflow-gpu
+
+
+# Install Turicreate
+RUN apt-get install -y libblas3 liblapack3 libstdc++6
 RUN pip install turicreate
 RUN pip uninstall -y mxnet
 RUN pip install mxnet-cu80==1.1.0
@@ -35,7 +39,11 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 
 # Install additional libs
-RUN conda install -c conda-forge jupyter_full_width jupyter_nbextensions_configurator jupyter_contrib_nbextensions
+RUN conda install -c conda-forge jupyter_full_width jupyter_nbextensions_configurator jupyter_contrib_nbextensions jupyterthemes
 
+RUN conda install -c anaconda keras-gpu opencv caffe theano
+
+
+RUN pip install coremltools
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
